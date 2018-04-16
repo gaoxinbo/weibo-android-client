@@ -1,13 +1,17 @@
 package gaoxinbo.sinaweiboclient.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,10 +24,10 @@ import gaoxinbo.sinaweiboclient.model.Tweet;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
     List<Tweet> list = new ArrayList<>();
-    AppCompatActivity appCompatActivity;
+    Context context;
 
-    public TimelineAdapter(AppCompatActivity appCompatActivity) {
-        this.appCompatActivity = appCompatActivity;
+    public TimelineAdapter(Context context) {
+        this.context = context;
     }
 
     @NonNull
@@ -32,8 +36,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.tweet, parent, false);
-
         ViewHolder vh = new ViewHolder(itemView);
+
         return vh;
     }
 
@@ -46,9 +50,11 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         holder.userName.setText(user.getName());
         holder.source.setText(Html.fromHtml(tweet.getSource()));
         holder.postTime.setText(tweet.getCreated_at().substring(0, 19));
-        Glide.with(appCompatActivity)
+        Glide.with(context)
                 .load(user.getProfile_image_url())
                 .into(holder.avatar);
+
+
     }
 
     @Override

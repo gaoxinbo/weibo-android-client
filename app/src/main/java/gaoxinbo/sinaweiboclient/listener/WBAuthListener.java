@@ -9,7 +9,7 @@ import android.util.Log;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WbConnectErrorMessage;
 
-import gaoxinbo.sinaweiboclient.activity.TimelineActivity;
+import gaoxinbo.sinaweiboclient.activity.MainActivity;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 
@@ -26,7 +26,7 @@ public class WBAuthListener implements com.sina.weibo.sdk.auth.WbAuthListener{
         editor.putString(ACCESS_TOKEN, oauth2AccessToken.getToken());
         editor.commit();
 
-        Intent intent = new Intent(this.appCompatActivity, TimelineActivity.class);
+        Intent intent = new Intent(this.appCompatActivity, MainActivity.class);
         intent.putExtra(ACCESS_TOKEN, oauth2AccessToken.getToken());
         appCompatActivity.startActivity(intent);
     }

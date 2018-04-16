@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         init();
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         String token = sharedPref.getString(ACCESS_TOKEN, null);
         if (token != null) {
-            Intent intent = new Intent(this, TimelineActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ACCESS_TOKEN, token);
             startActivity(intent);
         }
