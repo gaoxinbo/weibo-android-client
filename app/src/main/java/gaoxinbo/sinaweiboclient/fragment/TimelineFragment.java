@@ -41,7 +41,7 @@ public class TimelineFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
-        Log.v("TimelineFragment", access_token);
+        Log.v("TimelineFragment", this.toString());
 
         final RetrofitTimelineService timelineService = ApiFactory.getTimelineService();
         final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token);
