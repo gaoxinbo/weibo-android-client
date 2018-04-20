@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Sina Weibo Client</string>
     <string name="login_button">Login with Weibo</string>
+    <string name="logout_button">Log out</string>
 </resources>

@@ -1,8 +1,8 @@
 package gaoxinbo.sinaweiboclient.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +14,15 @@ import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import gaoxinbo.sinaweiboclient.Constants;
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.listener.WBAuthListener;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboContract;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboDbHelper;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 
 public class LoginActivity extends AppCompatActivity {
     AuthInfo authInfo;
     SsoHandler ssoHandler;
+    WeiboDbHelper weiboDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +35,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void init() {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        String token = sharedPref.getString(ACCESS_TOKEN, null);
-        if (token != null) {
+        weiboDbHelper = new WeiboDbHelper(this);
+        SQLiteDatabase readableDatabase = weiboDbHelper.getReadableDatabase();
+        String[] columns = {WeiboContract.WeiboEntry.VALUE};
+        Cursor cursor = readableDatabase.query(
+                WeiboContract.WeiboEntry.TABLE_NAME,
+                columns,
+                WeiboContract.WeiboEntry.KEY + " = ?",
+                new String[]{ACCESS_TOKEN},
+                null,
+                null,
+                null
+        );
+        if (cursor.moveToFirst()) {
+            String token = cursor.getString(cursor.getColumnIndex(WeiboContract.WeiboEntry.VALUE));
+            cursor.close();
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(ACCESS_TOKEN, token);
             startActivity(intent);
         }
+
 
         authInfo = new AuthInfo(this, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
         WbSdk.install(this, authInfo);
