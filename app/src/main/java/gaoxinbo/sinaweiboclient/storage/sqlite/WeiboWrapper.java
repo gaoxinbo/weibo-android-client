@@ -3,16 +3,22 @@ package gaoxinbo.sinaweiboclient.storage.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Path;
 
 import java.util.Optional;
 
-import gaoxinbo.sinaweiboclient.application.WeiboApplication;
+import javax.inject.Inject;
+
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 
 public class WeiboWrapper {
-    WeiboDbHelper weiboDbHelper = new WeiboDbHelper(WeiboApplication.getInstance());
+    WeiboDbHelper weiboDbHelper;
+
+    @Inject
+    public WeiboWrapper(WeiboDbHelper weiboDbHelper) {
+        this.weiboDbHelper = weiboDbHelper;
+
+    }
 
     public Optional<String> getAccessToken(){
         SQLiteDatabase readableDatabase = weiboDbHelper.getReadableDatabase();

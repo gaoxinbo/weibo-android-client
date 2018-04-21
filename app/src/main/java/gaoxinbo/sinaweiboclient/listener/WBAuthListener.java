@@ -7,17 +7,23 @@ import android.util.Log;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WbConnectErrorMessage;
 
+import javax.inject.Inject;
+
 import gaoxinbo.sinaweiboclient.activity.MainActivity;
+import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 
 public class WBAuthListener implements com.sina.weibo.sdk.auth.WbAuthListener{
+    @Inject
     WeiboWrapper weiboWrapper;
+
     AppCompatActivity appCompatActivity;
+
     public WBAuthListener(AppCompatActivity appCompatActivity) {
         this.appCompatActivity = appCompatActivity;
-        weiboWrapper = new WeiboWrapper();
+        ((WeiboApplication)appCompatActivity.getApplication()).getLoginActivityComponent().inject(this);
     }
 
     @Override
