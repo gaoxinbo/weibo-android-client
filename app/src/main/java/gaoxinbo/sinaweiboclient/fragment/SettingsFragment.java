@@ -1,9 +1,6 @@
 package gaoxinbo.sinaweiboclient.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,20 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.activity.LoginActivity;
-import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboContract;
-import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboDbHelper;
-
-import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 
 public class SettingsFragment extends Fragment {
-    WeiboDbHelper weiboDbHelper;
+    WeiboWrapper weiboWrapper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        weiboDbHelper = new WeiboDbHelper(getContext());
+
+        weiboWrapper = new WeiboWrapper();
         View view = inflater.inflate(R.layout.settings, container, false);
 
         return view;
@@ -43,13 +37,11 @@ public class SettingsFragment extends Fragment {
         view.findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(getContext(), "Log out", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getContext(), "Logging Out", Toast.LENGTH_SHORT);
                 toast.show();
 
-                SQLiteDatabase writableDatabase = weiboDbHelper.getWritableDatabase();
-                writableDatabase.delete(WeiboContract.WeiboEntry.TABLE_NAME,
-                        WeiboContract.WeiboEntry.KEY + " =? ",
-                        new String[]{ACCESS_TOKEN});
+                weiboWrapper.deleteAccessToken();
+
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
             }

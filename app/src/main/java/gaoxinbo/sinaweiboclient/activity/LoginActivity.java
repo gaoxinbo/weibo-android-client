@@ -1,8 +1,6 @@
 package gaoxinbo.sinaweiboclient.activity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,18 +9,19 @@ import com.sina.weibo.sdk.WbSdk;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 
+import java.util.Optional;
+
 import gaoxinbo.sinaweiboclient.Constants;
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.listener.WBAuthListener;
-import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboContract;
-import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboDbHelper;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 
 public class LoginActivity extends AppCompatActivity {
     AuthInfo authInfo;
     SsoHandler ssoHandler;
-    WeiboDbHelper weiboDbHelper;
+    WeiboWrapper weiboWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +34,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void init() {
-        weiboDbHelper = new WeiboDbHelper(this);
-        SQLiteDatabase readableDatabase = weiboDbHelper.getReadableDatabase();
-        String[] columns = {WeiboContract.WeiboEntry.VALUE};
-        Cursor cursor = readableDatabase.query(
-                WeiboContract.WeiboEntry.TABLE_NAME,
-                columns,
-                WeiboContract.WeiboEntry.KEY + " = ?",
-                new String[]{ACCESS_TOKEN},
-                null,
-                null,
-                null
-        );
-        if (cursor.moveToFirst()) {
-            String token = cursor.getString(cursor.getColumnIndex(WeiboContract.WeiboEntry.VALUE));
-            cursor.close();
+        weiboWrapper = new WeiboWrapper();
+        Optional<String> accessToken = weiboWrapper.getAccessToken();
+        if (accessToken.isPresent()) {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(ACCESS_TOKEN, token);
+            intent.putExtra(ACCESS_TOKEN, accessToken.get());
             startActivity(intent);
         }
 
