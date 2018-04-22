@@ -5,12 +5,16 @@ package gaoxinbo.sinaweiboclient.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -20,6 +24,7 @@ import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 import retrofit2.Callback;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
@@ -37,6 +42,10 @@ public class TimelineFragment extends Fragment {
     @Inject
     TimelineCache timelineCache;
 
+    @Inject
+    WeiboWrapper weiboWrapper;
+
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -46,7 +55,39 @@ public class TimelineFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_timeline, container, false);
+        final SwipeRefreshLayout view = (SwipeRefreshLayout) inflater.inflate(R.layout.activity_timeline, container, false);
+
+        view.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                Toast.makeText(WeiboApplication.getInstance(), "Fetching...", Toast.LENGTH_SHORT).show();
+                Optional<String> access_token = weiboWrapper.getAccessToken();
+
+                // handle access_token is not present
+                final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token.get());
+                timeline.enqueue(new Callback<Timeline>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {
+                        Timeline timeline = response.body();
+                        adapter.setList(timeline.getStatuses());
+                        Toast.makeText(WeiboApplication.getInstance(), "Fetch done", Toast.LENGTH_SHORT).show();
+
+                        view.setRefreshing(false);
+                    }
+
+
+                    @Override
+                    public void onFailure(retrofit2.Call<Timeline> call, Throwable t) {
+                        Toast.makeText(WeiboApplication.getInstance(), "Unable to fetch timeline", Toast.LENGTH_SHORT).show();
+                        view.setRefreshing(false);
+                    }
+                });
+
+
+            }
+        });
+
         recyclerView = view.findViewById(R.id.timeline_list);
         recyclerView.setHasFixedSize(true);
 
@@ -57,7 +98,7 @@ public class TimelineFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
-        Log.v("TimelineFragment", this.toString());
+
 
         final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token);
         timeline.enqueue(new Callback<Timeline>() {
@@ -65,8 +106,8 @@ public class TimelineFragment extends Fragment {
             public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {
                 Timeline timeline = response.body();
                 adapter.setList(timeline.getStatuses());
-                timelineCache.saveCachedTweet(timeline);
             }
+
 
             @Override
             public void onFailure(retrofit2.Call<Timeline> call, Throwable t) {
