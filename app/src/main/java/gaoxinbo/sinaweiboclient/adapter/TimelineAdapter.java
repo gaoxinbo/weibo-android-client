@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,17 @@ import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.activity.UserHomepageActivity;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
+import gaoxinbo.sinaweiboclient.Constants;
+import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
     List<Tweet> list = new ArrayList<>();
     Context context;
+    Gson gson = new GsonBuilder().setLenient().create();
+    TimelineCache timelineCache;
 
-    public TimelineAdapter(Context context) {
+    public TimelineAdapter(Context context, TimelineCache timelineCache) {
+        this.timelineCache = timelineCache;
         this.context = context;
     }
 
@@ -42,8 +49,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Tweet tweet = list.get(position);
-        Tweet.User user = tweet.getUser();
+        final Tweet tweet = list.get(position);
+        final Tweet.User user = tweet.getUser();
 
         holder.tweet.setText(tweet.getText());
         holder.userName.setText(user.getName());
@@ -58,6 +65,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WeiboApplication.getInstance(), UserHomepageActivity.class);
+                intent.putExtra(Constants.USER, gson.toJson(user));
                 context.startActivity(intent);
             }
         });
@@ -89,5 +97,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     public void setList(List<Tweet> list) {
         this.list = list;
         notifyDataSetChanged();
+
     }
 }

@@ -19,6 +19,7 @@ import gaoxinbo.sinaweiboclient.adapter.TimelineAdapter;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
+import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
 import retrofit2.Callback;
 
 import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
@@ -26,11 +27,15 @@ import static gaoxinbo.sinaweiboclient.Constants.ACCESS_TOKEN;
 public class TimelineFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private TimelineAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private TimelineAdapter adapter;
 
     @Inject
     RetrofitTimelineService timelineService;
+
+    @Inject
+    TimelineCache timelineCache;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +53,7 @@ public class TimelineFragment extends Fragment {
         layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new TimelineAdapter(container.getContext());
+        adapter = new TimelineAdapter(container.getContext(), timelineCache);
         recyclerView.setAdapter(adapter);
 
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
@@ -60,6 +65,7 @@ public class TimelineFragment extends Fragment {
             public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {
                 Timeline timeline = response.body();
                 adapter.setList(timeline.getStatuses());
+                timelineCache.saveCachedTweet(timeline);
             }
 
             @Override
