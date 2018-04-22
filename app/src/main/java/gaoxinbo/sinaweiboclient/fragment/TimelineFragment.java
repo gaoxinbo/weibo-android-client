@@ -2,7 +2,6 @@ package gaoxinbo.sinaweiboclient.fragment;
 
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +13,7 @@ import android.view.ViewGroup;
 
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.adapter.TimelineAdapter;
-import gaoxinbo.sinaweiboclient.model.Timeline;
+import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.ApiFactory;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import retrofit2.Callback;

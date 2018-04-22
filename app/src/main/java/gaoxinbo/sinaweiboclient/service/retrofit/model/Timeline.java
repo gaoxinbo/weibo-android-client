@@ -1,4 +1,4 @@
-package gaoxinbo.sinaweiboclient.model;
+package gaoxinbo.sinaweiboclient.service.retrofit.model;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package gaoxinbo.sinaweiboclient.service.retrofit;
 
 
-import gaoxinbo.sinaweiboclient.model.Timeline;
+import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

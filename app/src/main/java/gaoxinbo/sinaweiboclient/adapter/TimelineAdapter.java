@@ -2,16 +2,12 @@ package gaoxinbo.sinaweiboclient.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gaoxinbo.sinaweiboclient.R;
-import gaoxinbo.sinaweiboclient.model.Tweet;
+import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
     List<Tweet> list = new ArrayList<>();
