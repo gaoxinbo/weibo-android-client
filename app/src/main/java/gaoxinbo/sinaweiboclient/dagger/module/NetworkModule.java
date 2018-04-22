@@ -1,15 +1,24 @@
-package gaoxinbo.sinaweiboclient.service.retrofit;
+package gaoxinbo.sinaweiboclient.dagger.module;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiFactory {
-    static String timeline_url = "https://api.weibo.com/2/statuses/";
+@Module
+public class NetworkModule {
 
-    static public RetrofitTimelineService getTimelineService() {
+    @Singleton
+    @Provides
+    public RetrofitTimelineService providesRetrofitTimelineService() {
+        String timeline_url = "https://api.weibo.com/2/statuses/";
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();

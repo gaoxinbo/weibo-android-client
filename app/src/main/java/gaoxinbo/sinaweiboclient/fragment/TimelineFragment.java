@@ -3,6 +3,7 @@ package gaoxinbo.sinaweiboclient.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import javax.inject.Inject;
+
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.adapter.TimelineAdapter;
+import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
-import gaoxinbo.sinaweiboclient.service.retrofit.ApiFactory;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import retrofit2.Callback;
 
@@ -26,6 +29,15 @@ public class TimelineFragment extends Fragment {
     private TimelineAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    @Inject
+    RetrofitTimelineService timelineService;
+
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ((WeiboApplication)getActivity().getApplication()).getTimelineFragmentComponent().inject(this);
+
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,7 +54,6 @@ public class TimelineFragment extends Fragment {
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
         Log.v("TimelineFragment", this.toString());
 
-        final RetrofitTimelineService timelineService = ApiFactory.getTimelineService();
         final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token);
         timeline.enqueue(new Callback<Timeline>() {
             @Override

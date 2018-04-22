@@ -5,15 +5,24 @@ import android.content.Context;
 
 import gaoxinbo.sinaweiboclient.dagger.component.DaggerLoginActivityComponent;
 import gaoxinbo.sinaweiboclient.dagger.component.DaggerSettingFragmentComponent;
+import gaoxinbo.sinaweiboclient.dagger.component.DaggerTimelineFragmentComponent;
 import gaoxinbo.sinaweiboclient.dagger.component.LoginActivityComponent;
 import gaoxinbo.sinaweiboclient.dagger.component.SettingFragmentComponent;
+import gaoxinbo.sinaweiboclient.dagger.component.TimelineFragmentComponent;
+import gaoxinbo.sinaweiboclient.dagger.module.NetworkModule;
 import gaoxinbo.sinaweiboclient.dagger.module.StorageModule;
+import lombok.Getter;
 
 public class WeiboApplication extends Application {
-    private static Context mContext;
+    @Getter
+    private static Context instance;
 
+    @Getter
     LoginActivityComponent loginActivityComponent;
+    @Getter
     SettingFragmentComponent settingFragmentComponent;
+    @Getter
+    TimelineFragmentComponent timelineFragmentComponent;
 
     @Override
     public void onCreate() {
@@ -25,18 +34,11 @@ public class WeiboApplication extends Application {
         settingFragmentComponent = DaggerSettingFragmentComponent
                 .builder().storageModule(new StorageModule()).build();
 
-        mContext = getApplicationContext();
+        timelineFragmentComponent = DaggerTimelineFragmentComponent
+                .builder().networkModule(new NetworkModule()).build();
+
+        instance = getApplicationContext();
     }
 
-    public static Context getInstance() {
-        return mContext;
-    }
 
-    public LoginActivityComponent getLoginActivityComponent() {
-        return this.loginActivityComponent;
-    }
-
-    public SettingFragmentComponent getSettingFragmentComponent() {
-        return this.settingFragmentComponent;
-    }
 }

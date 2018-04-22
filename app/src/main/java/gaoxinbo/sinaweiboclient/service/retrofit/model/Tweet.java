@@ -16,5 +16,14 @@ public class Tweet {
     public class User {
         String name;
         String profile_image_url;
+        Long id;
+        Integer followers_count;
+        Integer friends_count;
+        Integer statuses_count;
+        Integer favourites_count;
+        String description;
+        Boolean following;
+        String province;
+        String city;
     }
 }

@@ -1,6 +1,7 @@
 package gaoxinbo.sinaweiboclient.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gaoxinbo.sinaweiboclient.R;
+import gaoxinbo.sinaweiboclient.activity.UserHomepageActivity;
+import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
@@ -46,10 +49,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         holder.userName.setText(user.getName());
         holder.source.setText(Html.fromHtml(tweet.getSource()));
         holder.postTime.setText(tweet.getCreated_at().substring(0, 19));
+
+
         Glide.with(context)
                 .load(user.getProfile_image_url())
                 .into(holder.avatar);
-
+        holder.avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WeiboApplication.getInstance(), UserHomepageActivity.class);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
