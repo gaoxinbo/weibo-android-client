@@ -8,11 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.adapter.TimelineAdapter;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
-import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
+import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
 import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
 import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 import retrofit2.Callback;
@@ -37,7 +37,7 @@ public class TimelineFragment extends Fragment {
     private TimelineAdapter adapter;
 
     @Inject
-    RetrofitTimelineService timelineService;
+    RetrofitTimelineWrapper retrofitTimelineWrapper;
 
     @Inject
     TimelineCache timelineCache;
@@ -64,8 +64,8 @@ public class TimelineFragment extends Fragment {
                 Toast.makeText(WeiboApplication.getInstance(), "Fetching...", Toast.LENGTH_SHORT).show();
                 Optional<String> access_token = weiboWrapper.getAccessToken();
 
-                // handle access_token is not present
-                final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token.get());
+
+                final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getDefaultTimeline(access_token.get());
                 timeline.enqueue(new Callback<Timeline>() {
                     @Override
                     public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {
@@ -99,8 +99,7 @@ public class TimelineFragment extends Fragment {
 
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
 
-
-        final retrofit2.Call<Timeline> timeline = timelineService.getTimeline(access_token);
+        final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getDefaultTimeline(access_token);
         timeline.enqueue(new Callback<Timeline>() {
             @Override
             public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {

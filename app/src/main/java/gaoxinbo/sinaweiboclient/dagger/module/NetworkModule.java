@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
+import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -30,5 +31,11 @@ public class NetworkModule {
 
         RetrofitTimelineService retrofitTimelineService = retrofit.create(RetrofitTimelineService.class);
         return retrofitTimelineService;
+    }
+
+    @Singleton
+    @Provides
+    public RetrofitTimelineWrapper providesRetrofitTimelineWrapper(RetrofitTimelineService retrofitTimelineService) {
+        return new RetrofitTimelineWrapper(retrofitTimelineService);
     }
 }

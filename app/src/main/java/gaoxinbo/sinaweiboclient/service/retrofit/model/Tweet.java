@@ -10,6 +10,7 @@ public class Tweet {
     String source;
     User user;
     String created_at;
+    Long id;
 
     @Setter
     @Getter
