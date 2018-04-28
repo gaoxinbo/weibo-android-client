@@ -34,7 +34,8 @@ public class TimelineFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
 
-    private TimelineAdapter adapter;
+    @Inject
+    TimelineAdapter adapter;
 
     @Inject
     RetrofitTimelineWrapper retrofitTimelineWrapper;
@@ -65,13 +66,16 @@ public class TimelineFragment extends Fragment {
                 Optional<String> access_token = weiboWrapper.getAccessToken();
 
 
-                final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getDefaultTimeline(access_token.get());
+                final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getTimelineLaterThan(
+                        access_token.get(),
+                        adapter.getMaxId()
+                );
                 timeline.enqueue(new Callback<Timeline>() {
                     @Override
                     public void onResponse(retrofit2.Call<Timeline> call, retrofit2.Response<Timeline> response) {
                         Timeline timeline = response.body();
-                        adapter.setList(timeline.getStatuses());
-                        Toast.makeText(WeiboApplication.getInstance(), "Fetch done", Toast.LENGTH_SHORT).show();
+                        adapter.insertFront(timeline.getStatuses());
+                        Toast.makeText(WeiboApplication.getInstance(), String.format("fetched %d tweet(s)", timeline.getStatuses().size()), Toast.LENGTH_SHORT).show();
 
                         view.setRefreshing(false);
                     }
@@ -94,7 +98,6 @@ public class TimelineFragment extends Fragment {
         layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new TimelineAdapter(container.getContext(), timelineCache);
         recyclerView.setAdapter(adapter);
 
         String access_token = this.getArguments().getString(ACCESS_TOKEN);
@@ -115,5 +118,6 @@ public class TimelineFragment extends Fragment {
         });
         return view;
     }
+
 
 }

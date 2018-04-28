@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
-import javax.inject.Inject;
 
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
@@ -34,7 +33,7 @@ public class RetrofitTimelineWrapper {
         Map<String, String> map = ImmutableMap.<String, String>builder()
                 .put("access_token", access_token)
                 .put("count", String.valueOf(count))
-                .put("max_id", String.valueOf(max_id))
+                .put("max_id", String.valueOf(max_id - 1))
                 .build();
         return retrofitTimelineService.getTimeline(map);
     }

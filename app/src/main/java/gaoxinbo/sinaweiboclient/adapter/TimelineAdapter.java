@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +22,28 @@ import java.util.List;
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.activity.UserHomepageActivity;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
+import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
 import gaoxinbo.sinaweiboclient.Constants;
-import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
+import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
+import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
+import lombok.RequiredArgsConstructor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+@RequiredArgsConstructor(staticName = "of")
 public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Tweet> list = new ArrayList<>();
-    Context context;
-    Gson gson = new GsonBuilder().setLenient().create();
-    TimelineCache timelineCache;
+
+    final Context context;
+    final Gson gson;
+    final RetrofitTimelineWrapper retrofitTimelineWrapper;
+    final WeiboWrapper weiboWrapper;
 
     enum ViewType {
         Tweet,
         Fetch
-    }
-
-    public TimelineAdapter(Context context, TimelineCache timelineCache) {
-        this.timelineCache = timelineCache;
-        this.context = context;
     }
 
     @Override
@@ -65,6 +69,40 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fetch_button, parent, false);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (list.isEmpty()) {
+                        //final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getDefaultTimeline(weiboWrapper.getAccessToken().get());
+
+                    } else {
+                        Long lastId = list.get(list.size() - 1).getId() ;
+                        final Call<Timeline> timeline = retrofitTimelineWrapper.getTimelineEarlierThan(
+                                weiboWrapper.getAccessToken().get(),
+                                lastId
+                        );
+
+                        timeline.enqueue(new Callback<Timeline>() {
+                            @Override
+                            public void onResponse(Call<Timeline> call, Response<Timeline> response) {
+                                Timeline timeline = response.body();
+                                list.addAll(timeline.getStatuses());
+                                Toast toast = Toast.makeText(context, String.format("fetched %d tweet(s)", timeline.getStatuses().size()), Toast.LENGTH_SHORT);
+                                toast.show();
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFailure(Call<Timeline> call, Throwable t) {
+
+                            }
+                        });
+
+                    }
+
+                }
+            });
             return new FetchViewHolder(itemView);
         }
     }
@@ -94,10 +132,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         } else {
-            if (list.size() > 0) {
-                Toast toast = Toast.makeText(this.context, String.valueOf(list.get(list.size()-1).getId()), Toast.LENGTH_LONG );
-                toast.show();
-            }
+
         }
     }
 
@@ -134,5 +169,19 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.list = list;
         notifyDataSetChanged();
 
+    }
+
+    public Long getMaxId() {
+        return list.get(0).getId();
+    }
+
+
+    public void insertFront(List<Tweet> elements) {
+        List<Tweet> newList = new ArrayList<>(elements.size() + list.size());
+        newList.addAll(elements);
+        newList.addAll(list);
+
+        list = newList;
+        notifyDataSetChanged();
     }
 }
