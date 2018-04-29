@@ -52,10 +52,23 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:text="tweet"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/retweet"
+                    android:text="re-tweet"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_below="@id/tweet"
+                    android:layout_marginBottom="16dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="#EEEEEE"
+                    />
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="6dp"
-                    android:layout_below="@id/tweet"
+                    android:layout_below="@id/retweet"
                     android:background="@android:color/darker_gray"  />
         </RelativeLayout>
 

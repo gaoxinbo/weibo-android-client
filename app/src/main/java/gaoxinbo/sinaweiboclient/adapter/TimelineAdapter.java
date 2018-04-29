@@ -119,6 +119,16 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vh.source.setText(Html.fromHtml(tweet.getSource()));
             vh.postTime.setText(tweet.getCreated_at().substring(0, 19));
 
+            if (tweet.getRetweeted_status() != null) {
+                StringBuilder sb = new StringBuilder(128);
+                sb.append("@");
+                sb.append(tweet.getRetweeted_status().getUser().getName());
+                sb.append(":");
+                sb.append(tweet.getRetweeted_status().getText());
+                vh.retweet.setText(sb.toString());
+            } else {
+                vh.retweet.setVisibility(View.GONE);
+            }
 
             Glide.with(context)
                     .load(user.getProfile_image_url())
@@ -148,6 +158,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView userName;
         public ImageView avatar;
         public TextView postTime;
+        public TextView retweet;
 
         public TweetViewHolder(View v) {
             super(v);
@@ -156,6 +167,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             userName = v.findViewById(R.id.user_name);
             avatar = v.findViewById(R.id.avatar);
             postTime = v.findViewById(R.id.post_time);
+            retweet = v.findViewById(R.id.retweet);
         }
     }
 

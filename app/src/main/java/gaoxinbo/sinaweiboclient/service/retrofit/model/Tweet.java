@@ -11,6 +11,7 @@ public class Tweet {
     User user;
     String created_at;
     Long id;
+    Retweet retweeted_status;
 
     @Setter
     @Getter
@@ -26,5 +27,12 @@ public class Tweet {
         Boolean following;
         String province;
         String city;
+    }
+
+    @Getter
+    @Setter
+    public class Retweet {
+        String text;
+        User user;
     }
 }
