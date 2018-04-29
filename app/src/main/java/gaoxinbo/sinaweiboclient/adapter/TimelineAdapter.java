@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.activity.UserHomepageActivity;
+import gaoxinbo.sinaweiboclient.adapter.helper.TweetDecorator;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
@@ -114,7 +115,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final Tweet tweet = list.get(position);
             final Tweet.User user = tweet.getUser();
 
-            vh.tweet.setText(tweet.getText());
+            vh.tweet.setText(TweetDecorator.getTweetSpannableStringBuilder(context,tweet));
+            vh.tweet.setMovementMethod(LinkMovementMethod.getInstance());
+
             vh.userName.setText(user.getName());
             vh.source.setText(Html.fromHtml(tweet.getSource()));
             vh.postTime.setText(tweet.getPostTimeStr());

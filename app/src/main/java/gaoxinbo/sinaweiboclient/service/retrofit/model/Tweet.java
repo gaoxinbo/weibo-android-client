@@ -29,18 +29,20 @@ public class Tweet {
         try {
             final Date post_time = SIMPLE_DATE_FORMAT.parse(created_at);
             long mills = now.getTime() - post_time.getTime();
-
             if (mills >= DAY) {
                 return String.format("%d days ago", mills / DAY);
             } else if (mills >= HOUR) {
                 return String.format("%d hours ago", mills / HOUR);
-            } else {
+            } else if (mills >= MINUTE){
                 return String.format("%d mins ago", mills / MINUTE);
+            } else {
+                return "just now";
             }
         } catch (ParseException e) {
             return created_at;
         }
     }
+
 
     @Setter
     @Getter
