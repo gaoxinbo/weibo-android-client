@@ -117,7 +117,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             vh.tweet.setText(tweet.getText());
             vh.userName.setText(user.getName());
             vh.source.setText(Html.fromHtml(tweet.getSource()));
-            vh.postTime.setText(tweet.getCreated_at().substring(0, 19));
+            vh.postTime.setText(tweet.getPostTimeStr());
 
             if (tweet.getRetweeted_status() != null) {
                 StringBuilder sb = new StringBuilder(128);
