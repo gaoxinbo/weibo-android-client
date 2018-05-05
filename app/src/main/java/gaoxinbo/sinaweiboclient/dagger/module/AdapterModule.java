@@ -14,14 +14,14 @@ import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
 
 @Module
 public class AdapterModule {
-
-    @Singleton
-    @Provides
-    public TimelineAdapter providesTimelineAdapter(
-            Gson gson,
-            Context context,
-            RetrofitTimelineWrapper retrofitTimelineWrapper,
-            WeiboWrapper weiboWrapper) {
-        return TimelineAdapter.of(context, gson, retrofitTimelineWrapper, weiboWrapper);
-    }
+//
+//    @Singleton
+//    @Provides
+//    public TimelineAdapter providesTimelineAdapter(
+//            Gson gson,
+//            Context context,
+//            RetrofitTimelineWrapper retrofitTimelineWrapper,
+//            WeiboWrapper weiboWrapper) {
+//        return TimelineAdapter.of(context, gson, retrofitTimelineWrapper, weiboWrapper);
+//    }
 }

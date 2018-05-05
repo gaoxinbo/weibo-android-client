@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -22,6 +25,7 @@ import gaoxinbo.sinaweiboclient.R;
 import gaoxinbo.sinaweiboclient.adapter.TimelineAdapter;
 import gaoxinbo.sinaweiboclient.application.WeiboApplication;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
+import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
 import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
 import gaoxinbo.sinaweiboclient.storage.internal.TimelineCache;
 import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
@@ -34,7 +38,6 @@ public class TimelineFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
 
-    @Inject
     TimelineAdapter adapter;
 
     @Inject
@@ -52,6 +55,14 @@ public class TimelineFragment extends Fragment {
 
         ((WeiboApplication)getActivity().getApplication()).getTimelineFragmentComponent().inject(this);
 
+        adapter = TimelineAdapter
+                    .builder()
+                    .access_token(weiboWrapper.getAccessToken().get())
+                    .context(WeiboApplication.getInstance())
+                    .gson(new GsonBuilder().setLenient().create())
+                    .timelineService(retrofitTimelineWrapper)
+                    .list(new ArrayList<Tweet>())
+                    .build();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

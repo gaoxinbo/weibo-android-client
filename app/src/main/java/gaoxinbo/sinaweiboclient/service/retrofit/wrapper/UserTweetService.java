@@ -4,20 +4,17 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
-
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import retrofit2.Call;
 
-public class RetrofitTimelineWrapper implements TimelineService{
-
-
+public class UserTweetService implements TimelineService {
     RetrofitTimelineService retrofitTimelineService;
 
     Integer count = 50;
 
 
-    public RetrofitTimelineWrapper(RetrofitTimelineService retrofitTimelineService) {
+    public UserTweetService(RetrofitTimelineService retrofitTimelineService) {
         this.retrofitTimelineService = retrofitTimelineService;
     }
 
@@ -27,7 +24,7 @@ public class RetrofitTimelineWrapper implements TimelineService{
                 .put("access_token", access_token)
                 .put("count", String.valueOf(count))
                 .build();
-        return retrofitTimelineService.getTimeline(map);
+        return retrofitTimelineService.getUserTweets(map);
     }
 
     @Override
@@ -37,7 +34,7 @@ public class RetrofitTimelineWrapper implements TimelineService{
                 .put("count", String.valueOf(count))
                 .put("max_id", String.valueOf(max_id - 1))
                 .build();
-        return retrofitTimelineService.getTimeline(map);
+        return retrofitTimelineService.getUserTweets(map);
     }
 
     @Override
@@ -47,6 +44,6 @@ public class RetrofitTimelineWrapper implements TimelineService{
                 .put("count", String.valueOf(count))
                 .put("since_id", String.valueOf(since_id))
                 .build();
-        return retrofitTimelineService.getTimeline(map);
+        return retrofitTimelineService.getUserTweets(map);
     }
 }

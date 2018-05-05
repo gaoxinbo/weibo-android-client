@@ -11,4 +11,7 @@ import retrofit2.http.QueryMap;
 public interface RetrofitTimelineService {
     @GET("home_timeline.json")
     Call<Timeline> getTimeline(@QueryMap Map<String, String> map);
+
+    @GET("user_timeline.json")
+    Call<Timeline> getUserTweets(@QueryMap Map<String, String> map);
 }

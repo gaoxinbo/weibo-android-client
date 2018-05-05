@@ -27,20 +27,22 @@ import gaoxinbo.sinaweiboclient.service.retrofit.model.Timeline;
 import gaoxinbo.sinaweiboclient.service.retrofit.model.Tweet;
 import gaoxinbo.sinaweiboclient.Constants;
 import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
+import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.TimelineService;
 import gaoxinbo.sinaweiboclient.storage.sqlite.WeiboWrapper;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@RequiredArgsConstructor(staticName = "of")
+@Builder
 public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    List<Tweet> list = new ArrayList<>();
+    List<Tweet> list;
 
     final Context context;
     final Gson gson;
-    final RetrofitTimelineWrapper retrofitTimelineWrapper;
-    final WeiboWrapper weiboWrapper;
+    final TimelineService timelineService;
+    final String access_token;
 
     enum ViewType {
         Tweet,
@@ -78,9 +80,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         //final retrofit2.Call<Timeline> timeline = retrofitTimelineWrapper.getDefaultTimeline(weiboWrapper.getAccessToken().get());
 
                     } else {
-                        Long lastId = list.get(list.size() - 1).getId() ;
-                        final Call<Timeline> timeline = retrofitTimelineWrapper.getTimelineEarlierThan(
-                                weiboWrapper.getAccessToken().get(),
+                        Long lastId = list.get(list.size() - 1).getId();
+                        final Call<Timeline> timeline = timelineService.getTimelineEarlierThan(
+                                access_token,
                                 lastId
                         );
 

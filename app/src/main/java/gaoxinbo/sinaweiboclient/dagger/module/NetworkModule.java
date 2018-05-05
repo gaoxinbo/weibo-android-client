@@ -9,6 +9,7 @@ import dagger.Module;
 import dagger.Provides;
 import gaoxinbo.sinaweiboclient.service.retrofit.RetrofitTimelineService;
 import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.RetrofitTimelineWrapper;
+import gaoxinbo.sinaweiboclient.service.retrofit.wrapper.UserTweetService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -37,5 +38,12 @@ public class NetworkModule {
     @Provides
     public RetrofitTimelineWrapper providesRetrofitTimelineWrapper(RetrofitTimelineService retrofitTimelineService) {
         return new RetrofitTimelineWrapper(retrofitTimelineService);
+    }
+
+    @Singleton
+    @Provides
+    public UserTweetService provideUserTweetService(RetrofitTimelineService retrofitTimelineService) {
+        return new UserTweetService(retrofitTimelineService);
+
     }
 }
